@@ -10,47 +10,6 @@
 #include <utime.h>
 #include <time.h>
 
-/*int main(int argc, char **argv){
-	int i = 0;
-
-	// defaults quando nenhuma opção é enviada
-	//char option = 'r';
-	//int argument_index_of_first_directory_path = 1;
-	
-	int result;
-	int number_of_options = 0;
-	//opterr = 0; // esconde os prints para stderr quando acha um parametro desconhecido
-	while((result = getopt(argc, argv, "+rdlbc")) != -1){
-		number_of_options++;
-		
-		if(result == '?') {
-			printf("Opção %c inválida. Só as opções r,d,l,b,c são permitidas.\n", optopt);
-			return -1;
-		}
-		if(number_of_options > 1) {
-			printf("Só deve ser enviada uma unica opção no máximo!\n");
-			return -1;
-		}
-		
-		option = result;
-		argument_index_of_first_directory_path = 2;
-	}
-	opterr = 1;
-	
-	printf("Option used: %c\n", option);
-	
-	printf("Directories:\n");
-	
-	if(argument_index_of_first_directory_path == argc){
-		scan_directory(".", option);
-	}
-	
-	for(i = argument_index_of_first_directory_path; i < argc; i++) {
-		scan_directory(argv[i], option);
-	}
-
-	return 0;
-}*/
 void change_time(char *file_name, int access, int modification){
 	struct stat fileinfo;
 	struct utimbuf _time;
@@ -80,22 +39,44 @@ void change_time(char *file_name, int access, int modification){
 }
 
 void help(){
+	printf("Texto para explicar a entrada\n");
+	exit(EXIT_FAILURE);
 }
 
 int main(int argc, char **argv){
-	int i, c, access = 0, modification = 0;
+	int i, c, access = 0, modification = 0, count = 0;
+
+	if (argc < 2 ){
+			printf("./touch: falta o operando arquivo\n");
+			help();
+	}
+
 	while((c = getopt(argc, argv, "am")) != -1){			
 		switch(c){			
 			case 'a':
-				access = 1;	
+				access = 1;
+				count = 1;	
 				break;	
 			case 'm': 
 				modification = 1;
+				count = 1;
 				break;
 			default: help(); break;		
 		}
 	}
-	
-	change_time(argv[2], access, modification);
-	
+	//printf("%s\n", argv[2]);
+	if (count == 1)	{
+		if(argv[2] == NULL){
+			printf("./touch: falta o operando arquivo\n");
+			help();
+		}
+		change_time(argv[2], access, modification);		
+	}
+	if(count == 0){
+		if(argv[1] == NULL){
+			printf("./touch: falta o operando arquivo\n");
+			help();
+		}
+		change_time(argv[1], access, modification);	
+	}	
 }
