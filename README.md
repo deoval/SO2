@@ -19,4 +19,5 @@ execute ./make {arquivo c sem extensão} [parametros]
 
 # Feito
 
-- touch com opções: -a e -m
+- touch com opções: -a e -m e aceitando multiplos arquivos
+- cat: aceita varios arquivos e imprime eles na saida padrão. Aceita ler da entrada padrão
