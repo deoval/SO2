@@ -8,7 +8,7 @@ Escolhemos os utilitarios:
 
 - touch
 - cat
-- touch
+- cp
 - rm
 
 E algumas de suas opções
