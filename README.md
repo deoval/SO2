@@ -13,6 +13,10 @@ Escolhemos os utilitarios:
 
 E algumas de suas opções
 
+# Compilando
+
+execute ./make {arquivo c sem extensão} [parametros]
+
 # Feito
 
 - touch com opções: -a e -m
