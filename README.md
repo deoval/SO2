@@ -1,4 +1,4 @@
-# Repositório para o trabalho 4 da disciplina Sistemas Operacionasis 2.
+# Repositório para o trabalho 4 da disciplina Sistemas Operacionais 2
 
 Devemos reescrever parte de alguns utilitários do Linux.
 
