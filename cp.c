@@ -49,6 +49,20 @@ void copy_file(char *source_file_name, char *dest_file_name){
 	close(file_dest);
 }
 
+int isnot_dir(char *path){
+	struct stat st;
+	if((stat(path, &st))==-1){
+		printf( "./cp: cannot stat “%s”: %s \n", path, strerror(errno));
+  		exit(EXIT_FAILURE);
+	}
+	
+	if(S_ISDIR(st.st_mode)){
+		return 0;
+	}
+	return 1;
+
+}
+
 void help(){
 	printf("Só é aceito -a e -m como opções.\n");
 	exit(EXIT_FAILURE);
@@ -86,21 +100,25 @@ int main(int argc, char **argv){
 	}
 
 	if ((optind+2) == argc){
-		copy_file(argv[optind], argv[optind+1]);	
-	}
-	else{
-		struct stat st;
-		if((stat(argv[argc-1], &st))==-1){
-			printf( "[*] Can't stat() file %s\n", argv[argc-1] );
-      		exit(EXIT_FAILURE);
+		if (isnot_dir(argv[optind])){			
+			copy_file(argv[optind], argv[optind+1]);	
 		}
-		
-		if (!(S_ISDIR(st.st_mode))){
+		else{
+			printf("./cp: omitting directory “%s”\n", argv[optind]);
+		}
+	}
+	else{		
+		if (isnot_dir(argv[argc-1])){
 			printf("./cp: target “%s” is not a directory\n", argv[argc-1]);
 			exit(EXIT_FAILURE);
 		}
 		for (i = optind; i < (argc - 1); i++){
-			copy_file(argv[i], argv[argc-1]);
+			if (isnot_dir(argv[i])){
+				copy_file(argv[i], argv[argc-1]);				
+			}
+			else{
+				printf("./cp: omitting directory “%s”\n", argv[i]);
+			}
 		}		
 	}		
 	return 0;
