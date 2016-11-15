@@ -94,7 +94,8 @@ int main(int argc, char **argv){
 			printf( "[*] Can't stat() file %s\n", argv[argc-1] );
       		exit(EXIT_FAILURE);
 		}
-		if (st.st_mode != S_IFDIR){
+		
+		if (!(S_ISDIR(st.st_mode))){
 			printf("./cp: target “%s” is not a directory\n", argv[argc-1]);
 			exit(EXIT_FAILURE);
 		}
