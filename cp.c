@@ -37,7 +37,7 @@ void copy_file(char *source_file_name, char *dest_file_name){
 		strcat(dest_buff, source_file_name);
 		file_dest = open(dest_buff,O_WRONLY | O_TRUNC | O_CREAT, MODO_CRIACAO);
 		if (file_dest == -1){
-			fprintf(stderr,"Erroaaa: %s\n",strerror(errno));
+			fprintf(stderr,"Erro: %s\n",strerror(errno));
 	  		exit(EXIT_FAILURE);
 		}	
 	}
@@ -64,18 +64,17 @@ int isnot_dir(char *path){
 }
 
 void help(){
-	printf("Só é aceito -a e -m como opções.\n");
+	printf("Esse programa não aceita opções.\n");
 	exit(EXIT_FAILURE);
 }
 
 int main(int argc, char **argv){
 	int i;
 	char c;
-	int file;
 
 	opterr = 0;
-	//Verificar as opções
-	while((c = getopt(argc, argv, "am")) != -1){			
+	// Verificar as opções
+	while((c = getopt(argc, argv, "")) != -1){			
 		switch(c){		
 			case 'a':
 				//a_flag = 1;
