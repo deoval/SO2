@@ -1,0 +1,17 @@
+NAME
+       touch - change file timestamps
+
+SYNOPSIS
+       touch [OPTION]... FILE...
+
+DESCRIPTION
+       Update the access and modification times of each FILE to the current time.
+
+       A FILE argument that does not exist is created empty
+
+       -a     change only the access time
+
+       -m     change only the modification time
+
+AUTHOR
+       Written by Daniel, Deoval e Igor

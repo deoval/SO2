@@ -1,0 +1,19 @@
+NAME
+       cat - concatenate files and print on the standard output
+
+SYNOPSIS
+       cat [FILE]...
+
+DESCRIPTION
+       Concatenate FILE(s), or standard input, to standard output.
+
+       With no FILE, or when FILE is -, read standard input.
+
+EXAMPLES
+       cat f - g
+              Output f's contents, then standard input, then g's contents.
+
+       cat    Copy standard input to standard output.
+
+AUTHOR
+       Written by Daniel, Deoval e Igor.

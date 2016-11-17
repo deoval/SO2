@@ -1,0 +1,18 @@
+NAME
+       cp - copy files and directories
+
+SYNOPSIS
+       cp SOURCE... DIRECTORY
+
+DESCRIPTION
+       Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY.
+
+EXAMPLES
+       cp file1 file2 dir
+              Copy file1 and file2 to dir directory
+
+       cp file1 dir/fileX
+              Copy file1 to directory dir, with a new name fileX
+
+AUTHOR
+       Written by Daniel, Deoval e Igor
