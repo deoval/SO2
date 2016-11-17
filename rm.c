@@ -5,11 +5,11 @@
 #include <errno.h>
 #include <string.h>
 #include <ftw.h>
-#define _DEBUGGER
+#include "utils.h"
+
+#define DEBUGGER
+
 #define MAX_OPEN_DESCRIPTORS 64
-int r_flag = 0;
-int f_flag = 0;
-int err;
 
 int rm(const char *file_name)
 {
@@ -17,7 +17,6 @@ int rm(const char *file_name)
 	res = remove(file_name);
 	if(res){
 		printf("Error removing file: %s \n", strerror(errno));
-		err=1;
 	}
 	return res;
 }
@@ -36,6 +35,8 @@ int main(int argc, char *argv[])
 {
 	char* file_name;
 	char c;
+	int r_flag = 0;
+	int f_flag = 0;
 
 	while((c = getopt(argc, argv, "rf")) != -1)
 	{
@@ -61,7 +62,6 @@ int main(int argc, char *argv[])
 			if (!f_flag) {
 				printf("File %s do not exist\n", file_name);
 			}
-			err=1;
 			continue;
 		}
 	
@@ -74,10 +74,6 @@ int main(int argc, char *argv[])
 
 	#ifdef DEBUGGER
 		printf("########## Detailed Log: ##########\n");
-		if (err)
-		{
-			printf("Program exit with error: %s\n",strerror(errno));
-		}
 		printf("Parameters :\n");
 		if (r_flag)
 		{

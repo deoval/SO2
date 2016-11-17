@@ -11,6 +11,8 @@
 #include <time.h>
 #include <errno.h>
 
+#define MODO_CRIACAO S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+
 int a_flag = 0;
 int m_flag = 0;
 char buffer[80]; // ajuda para usar o sprintf
@@ -73,7 +75,7 @@ int main(int argc, char **argv){
 	for(i = optind; i < argc; i++) {
 	    char* file_name = argv[i];
 	    //TO DO Verificar permissões na criação do arquivo
-	    file = open(file_name, O_CREAT, S_IRUSR | S_IWOTH);
+	    file = open(file_name, O_CREAT, MODO_CRIACAO);
 	    if(file == -1) {
 	    	sprintf(buffer, "./touch %s", file_name);
 	    	perror(buffer);
