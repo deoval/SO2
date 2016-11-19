@@ -13,32 +13,40 @@
 
 #define MODO_CRIACAO S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
 
-int a_flag = 0;
-int m_flag = 0;
+#define A_CHANGE_FLAG 1
+#define M_CHANGE_FLAG 2
+
 char buffer[80]; // ajuda para usar o sprintf
 
-void change_time(char *file_name){
+void change_time(char *file_name, int change_flags){
 	struct stat fileinfo;
-	struct utimbuf _time;
+	struct utimbuf new_time;
 	
-	if ( stat( file_name, &fileinfo ) == -1 ){
+	int r_stat = stat( file_name, &fileinfo );
+	if ( r_stat == -1 ){
 		sprintf(buffer, "./touch: Can't stat() file %s", file_name);
     	perror(buffer);
       	exit(EXIT_FAILURE);
   	}
    	
-	_time.actime = fileinfo.st_atim.tv_sec;
-	_time.modtime = fileinfo.st_mtim.tv_sec;
+	new_time.actime = fileinfo.st_atim.tv_sec;
+	new_time.modtime = fileinfo.st_mtim.tv_sec;
 	
 	time_t now = time(NULL);
-	if(a_flag){
-		_time.actime = now;
+	if(change_flags & A_CHANGE_FLAG){
+		new_time.actime = now;
 	}
 	
-	if(m_flag){
-		_time.modtime = now;
+	if(change_flags & M_CHANGE_FLAG){
+		new_time.modtime = now;
 	}
-	utime(file_name, &_time);
+	
+	int r_utime = utime(file_name, &new_time);
+	if ( r_utime == -1 ){
+		sprintf(buffer, "./touch: Can't change times of file %s", file_name);
+    	perror(buffer);
+      	exit(EXIT_FAILURE);
+  	}
 }
 
 void help(){
@@ -50,15 +58,16 @@ int main(int argc, char **argv){
 	int i;
 	char c;
 	int file;
+	int change_flags = A_CHANGE_FLAG | M_CHANGE_FLAG;
 
 	opterr = 0;
 	while((c = getopt(argc, argv, "am")) != -1){			
 		switch(c){		
 			case 'a':
-				a_flag = 1;
+				change_flags = A_CHANGE_FLAG;
 				break;
 			case 'm': 
-				m_flag = 1;
+				change_flags = M_CHANGE_FLAG;
 				break;
 			default:
 			    printf("./touch: Parametro desconhecido: %c\n", optopt);
@@ -74,14 +83,15 @@ int main(int argc, char **argv){
 	
 	for(i = optind; i < argc; i++) {
 	    char* file_name = argv[i];
-	    //TO DO Verificar permissões na criação do arquivo
-	    file = open(file_name, O_CREAT, MODO_CRIACAO);
+	    
+	    file = open(file_name, O_CREAT | O_WRONLY, MODO_CRIACAO);
 	    if(file == -1) {
 	    	sprintf(buffer, "./touch %s", file_name);
 	    	perror(buffer);
 	    	exit(EXIT_FAILURE);
 	    }
-	    change_time(file_name);
+	    
+	    change_time(file_name, change_flags);
 	}
 		
 	return 0;
