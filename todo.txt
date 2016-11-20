@@ -1,0 +1,5 @@
+- utilizar ar/ranlib
+- refatorar mensagens de erro para deixar o perror e usar strerror
+  - remover variavel buffer
+- uma macro para quebrar caso acontece algum erro em uma chamada
+- remover imports não usados
