@@ -1,3 +1,4 @@
+#define _XOPEN_SOURCE 700
 #include <sys/types.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -10,44 +11,7 @@
 #include <utime.h>
 #include <time.h>
 #include <errno.h>
-
-#define MODO_CRIACAO S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
-
-#define A_CHANGE_FLAG 1
-#define M_CHANGE_FLAG 2
-
-char buffer[80]; // ajuda para usar o sprintf
-
-void change_time(char *file_name, int change_flags){
-	struct stat fileinfo;
-	struct utimbuf new_time;
-	
-	int r_stat = stat( file_name, &fileinfo );
-	if ( r_stat == -1 ){
-		sprintf(buffer, "./touch: Can't stat() file %s", file_name);
-    	perror(buffer);
-      	exit(EXIT_FAILURE);
-  	}
-   	
-	new_time.actime = fileinfo.st_atim.tv_sec;
-	new_time.modtime = fileinfo.st_mtim.tv_sec;
-	
-	time_t now = time(NULL);
-	if(change_flags & A_CHANGE_FLAG){
-		new_time.actime = now;
-	}
-	
-	if(change_flags & M_CHANGE_FLAG){
-		new_time.modtime = now;
-	}
-	
-	int r_utime = utime(file_name, &new_time);
-	if ( r_utime == -1 ){
-		sprintf(buffer, "./touch: Can't change times of file %s", file_name);
-    	perror(buffer);
-      	exit(EXIT_FAILURE);
-  	}
-}
+#include "utils.h"
 
 void help(){
 	printf("Só é aceito -a e -m como opções.\n");
@@ -57,6 +21,7 @@ void help(){
 int main(int argc, char **argv){
 	int i;
 	char c;
+	char buffer[80];
 	int file;
 	int change_flags = A_CHANGE_FLAG | M_CHANGE_FLAG;
 

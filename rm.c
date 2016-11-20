@@ -1,4 +1,4 @@
-#define _XOPEN_SOURCE 500
+#define _XOPEN_SOURCE 700
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -7,29 +7,7 @@
 #include <ftw.h>
 #include "utils.h"
 
-#define DEBUGGER
-
-#define MAX_OPEN_DESCRIPTORS 64
-
-int rm(const char *file_name)
-{
-	int res;
-	res = remove(file_name);
-	if(res){
-		printf("Error removing file: %s \n", strerror(errno));
-	}
-	return res;
-}
-
-int nftw_callback_rm(const char *file_name, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
-{
-	return rm(file_name);
-}
-
-int rmrf(char *path)
-{
-    return nftw(path, nftw_callback_rm, MAX_OPEN_DESCRIPTORS, FTW_DEPTH | FTW_PHYS);
-}
+#define _DEBUGGER
 
 int main(int argc, char *argv[])
 {

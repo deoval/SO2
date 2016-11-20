@@ -1,3 +1,4 @@
+#define _XOPEN_SOURCE 700
 #include <sys/types.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -10,34 +11,7 @@
 #include <utime.h>
 #include <time.h>
 #include <errno.h>
-
-char buffer[80]; // ajuda para usar o sprintf
-
-void output_file(char* file_name) {
-	int c;
-	FILE* file;
-	
-	file = fopen(file_name, "r");
-    if(file == NULL) {
-    	sprintf(buffer, "./cat %s", file_name);
-    	perror(buffer);
-    	exit(EXIT_FAILURE);
-    }
-	
-	while ((c = fgetc(file)) != EOF) {
-        putchar(c);
-	}
-	
-	fclose(file);
-}
-
-void output_stdin() {
-	char c;
-	
-	while((c = getchar()) != -1) {
-		putchar(c);
-	}
-}
+#include "utils.h"
 
 int main(int argc, char **argv){
 	int i;
