@@ -5,6 +5,7 @@
 // used by cp
 void copy_file(char *source_file_name, char *dest_file_name);
 int isnot_dir(char *path);
+void copy_directory_files(char *path, char *dest_file_name);
 
 //used by rm
 #define MAX_OPEN_DESCRIPTORS 64

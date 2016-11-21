@@ -26,24 +26,24 @@ void copy_file(char *source_file_name, char *dest_file_name){
 
 	file_source = open(source_file_name, O_RDONLY);
 	if(file_source == -1){
-	    fprintf(stderr,"Erro: %s\n",strerror(errno));
+	    fprintf(stderr,"Erro em source %s: %s\n", source_file_name, strerror(errno));
 	    exit(EXIT_FAILURE);
 	}
 
-	file_dest = open(dest_file_name,O_WRONLY | O_TRUNC | O_CREAT, MODO_CRIACAO);
+	file_dest = open(dest_file_name,O_WRONLY | O_TRUNC | O_CREAT, st.st_mode);
 	if(file_dest == -1){
 		char dest_buff[1000] = "";
 		strcat(dest_buff, dest_file_name);
 		strcat(dest_buff, "/");
 		strcat(dest_buff, source_file_name);
-		file_dest = open(dest_buff,O_WRONLY | O_TRUNC | O_CREAT, MODO_CRIACAO);
+		file_dest = open(dest_buff,O_WRONLY | O_TRUNC | O_CREAT, st.st_mode);
 		if (file_dest == -1){
-			fprintf(stderr,"Erro: %s\n",strerror(errno));
+			fprintf(stderr,"Erro em dest %s: %s\n",dest_buff, strerror(errno));
 	  		exit(EXIT_FAILURE);
-		}	
+		}
 	}
 
-	while((bytes_lidos=read(file_source,buffer,st.st_size))!=0) 
+	while((bytes_lidos=read(file_source,buffer,st.st_size))!=0)
 	   write(file_dest,buffer,bytes_lidos);
 
 	close(file_source);
@@ -55,12 +55,33 @@ int isnot_dir(char *path){
 		printf( "./cp: cannot stat “%s”: %s \n", path, strerror(errno));
   		exit(EXIT_FAILURE);
 	}
-	
+
 	if(S_ISDIR(st.st_mode)){
 		return 0;
 	}
 	return 1;
 
+}
+
+void copy_directory_files(char *path, char *dest_file_name){
+	DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir (path)) != NULL) {
+	  /* print all the files and directories within directory */
+	  while ((ent = readdir (dir)) != NULL) {
+			char file_buff[1000] = "";
+			strcat(file_buff, path);
+			strcat(file_buff, "/");
+			strcat(file_buff, ent->d_name);
+			printf("%s\n",dest_file_name );
+	    copy_file(file_buff, dest_file_name);
+	  }
+	  closedir (dir);
+	} else {
+	  /* could not open directory */
+	  printf("cp: impossível obter estado de “%s”: %s\n", path, strerror(errno));
+	  exit(EXIT_FAILURE);
+	}
 }
 
 // used by rm
@@ -88,24 +109,24 @@ char buffer[80]; // ajuda para usar o sprintf
 void output_file(char* file_name) {
 	int c;
 	FILE* file;
-	
+
 	file = fopen(file_name, "r");
     if(file == NULL) {
     	sprintf(buffer, "./cat %s", file_name);
     	perror(buffer);
     	exit(EXIT_FAILURE);
     }
-	
+
 	while ((c = fgetc(file)) != EOF) {
         putchar(c);
 	}
-	
+
 	fclose(file);
 }
 
 void output_stdin() {
 	char c;
-	
+
 	while((c = getchar()) != -1) {
 		putchar(c);
 	}
@@ -115,26 +136,26 @@ void output_stdin() {
 void change_time(char *file_name, int change_flags){
 	struct stat fileinfo;
 	struct utimbuf new_time;
-	
+
 	int r_stat = stat( file_name, &fileinfo );
 	if ( r_stat == -1 ){
 		sprintf(buffer, "./touch: Can't stat() file %s", file_name);
     	perror(buffer);
       	exit(EXIT_FAILURE);
   	}
-   	
+
 	new_time.actime = fileinfo.st_atim.tv_sec;
 	new_time.modtime = fileinfo.st_mtim.tv_sec;
-	
+
 	time_t now = time(NULL);
 	if(change_flags & A_CHANGE_FLAG){
 		new_time.actime = now;
 	}
-	
+
 	if(change_flags & M_CHANGE_FLAG){
 		new_time.modtime = now;
 	}
-	
+
 	int r_utime = utime(file_name, &new_time);
 	if ( r_utime == -1 ){
 		sprintf(buffer, "./touch: Can't change times of file %s", file_name);
