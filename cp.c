@@ -68,7 +68,12 @@ int main(int argc, char **argv){
 				copy_file(argv[i], argv[argc-1]);
 			}
 			else{
-				printf("./cp: omitting directory “%s”\n", argv[i]);
+				if (r_flag) {
+					copy_directory_files(argv[i], argv[argc-1]);
+				}
+				else{					
+					printf("./cp: omitting directory “%s”\n", argv[i]);
+				}
 			}
 		}
 	}
