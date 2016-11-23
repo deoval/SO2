@@ -81,12 +81,19 @@ void copy_directory_files(char *path, char *dest_file_name){
 		mkdir(dir_buff, st.st_mode);
 	  while ((ent = readdir (dir)) != NULL) {
 	  	if (strcmp (ent->d_name, ".") == 0 || strcmp (ent->d_name, "..") == 0)
-			continue;
-		char file_buff[1000] = "";
-		strcat(file_buff, path);
-		strcat(file_buff, "/");
-		strcat(file_buff, ent->d_name);
-	    copy_file(file_buff, dest_file_name);
+				continue;
+
+			char file_buff[1000] = "";
+			strcat(file_buff, path);
+			strcat(file_buff, "/");
+			strcat(file_buff, ent->d_name);
+			if(isnot_dir(file_buff)){
+				copy_file(file_buff, dest_file_name);
+			}
+			else{
+		    copy_directory_files(file_buff, dest_file_name);
+			}
+
 	  }
 	  closedir (dir);
 	} else {

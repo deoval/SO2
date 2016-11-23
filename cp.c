@@ -47,11 +47,21 @@ int main(int argc, char **argv){
 
 	if ((optind+2) == argc){
 		if (isnot_dir(argv[optind])){
-			copy_file(argv[optind], argv[optind+1]);
+			if (strcmp(argv[optind], argv[optind+1]) == 0) {
+				printf("./cp: “%s” and “%s” are the same file\n", argv[optind], argv[optind+1]);
+			}
+			else{
+				copy_file(argv[optind], argv[optind+1]);
+			}
 		}
 		else{
 			if (r_flag) {
-				copy_directory_files(argv[optind], argv[optind+1]);
+				if (strcmp(argv[optind], argv[optind+1]) == 0) {
+					printf("./cp: cannot copy a directory, “%s”, into itself, “%s/%s”\n", argv[optind], argv[optind+1], argv[optind]);
+				}
+				else{
+					copy_directory_files(argv[optind], argv[optind+1]);
+				}
 			}
 			else{
 				printf("./cp: omitting directory “%s”\n", argv[optind]);
@@ -65,13 +75,23 @@ int main(int argc, char **argv){
 		}
 		for (i = optind; i < (argc - 1); i++){
 			if (isnot_dir(argv[i])){
-				copy_file(argv[i], argv[argc-1]);
+				if (strcmp(argv[i], argv[argc-1]) == 0) {
+					printf("./cp: “%s” and “%s” are the same file\n", argv[i], argv[argc-1]);
+				}
+				else{
+					copy_file(argv[i], argv[argc-1]);
+				}
 			}
 			else{
 				if (r_flag) {
-					copy_directory_files(argv[i], argv[argc-1]);
+					if (strcmp(argv[i], argv[argc-1]) == 0) {
+						printf("./cp: cannot copy a directory, “%s”, into itself, “%s/%s”\n", argv[i], argv[argc-1], argv[i]);
+					}
+					else{
+						copy_directory_files(argv[i], argv[argc-1]);
+					}
 				}
-				else{					
+				else{
 					printf("./cp: omitting directory “%s”\n", argv[i]);
 				}
 			}
